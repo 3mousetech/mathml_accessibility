@@ -5,18 +5,17 @@ The normalize_mathml function expects an elementtree root element and normalizes
 from __future__ import unicode_literals
 import xml.etree.ElementTree as ElementTree
 import re
-
+from . import data
 
 #these elements wrap their immediate children in mrow elements.
 single_argument_elements = set(["msqrt", "mstyle", "merror", "mpadded", "mphantom",
-"menclose", "mtd", "math"])
 
 #matches XML namespace.
 namespace_re = re.compile(".+:.+")
 
 def _normalize_node(node):
 	#handle the single mrow case.
-	if node.tag in single_argument_elements and (node[0].tag != "mrow" or len(node) != 1):
+	if node.tag in data.single_argument_elements and (node[0].tag != "mrow" or len(node) != 1):
 		old_children = list(node) #get the children in order.
 		#We kill the children.  We're holding copies
 		while len(node):
