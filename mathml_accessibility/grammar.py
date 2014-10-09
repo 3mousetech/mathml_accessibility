@@ -1,1 +1,0 @@
-""A grammar is a set of math rules organized by category."""
