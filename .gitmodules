@@ -1,0 +1,3 @@
+[submodule "speech-rule-engine"]
+	path = speech-rule-engine
+	url = git@github.com:mathjax/speech-rule-engine.git
