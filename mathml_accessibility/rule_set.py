@@ -73,11 +73,15 @@ def end_rule_set():
 	rule_sets[current_rule_set.name] = current_rule_set
 	current_rule_set = None
 
-def add_topic(self, topic):
+def add_topic(topic):
 	global current_rule_set
 	if current_rule_set is None:
 		raise no_current_rule_set
 	current_rule_set.add_topic(topic)
+
+def add_topics(*args):
+	for i in args:
+		add_topic(i)
 
 def set_topic_order(order):
 	global current_rule_set
