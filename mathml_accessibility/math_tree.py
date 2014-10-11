@@ -1,4 +1,4 @@
-from ___future__ import unicode_literals
+from __future__ import unicode_literals
 import xml.etree.ElementTree as ElementTree
 
 class MathNode(object):
@@ -15,29 +15,34 @@ class MathNode(object):
 	def compute_strings(self):
 		"""Assumes that compute_strings has been called on all children."""
 		children_strings = [i.string for i in self.children]
-		children_strings_high_verbocity = [i.string_high_verbocity for i in self.children]
+		children_strings_low_verbocity = [i.string_low_verbocity for i in self.children]
 		zoom_target_strings = [i.string for i in getattr(self, 'zoom_targets', self.children)]
-		zoom_target_high_verbocity_strings = [i.string_high_verbocity for i in getattr(self, 'zoom_targets', self.children)]
+		zoom_target_low_verbocity_strings = [i.string_low_verbocity for i in getattr(self, 'zoom_targets', self.children)]
 		self.string = self.template_string.format(*children_strings, zoom_targets = zoom_target_strings)
-		self.string_high_verbocity = self.template_string_high_verbocity.format(*children_strings_high_verbocity, zoom_targets = zoom_target_high_verbocity_strings)
+		self.string_low_verbocity = self.template_string_low_verbocity.format(*children_strings_low_verbocity, zoom_targets = zoom_target_low_verbocity_strings)
 
-	def get_zoom_targets():
+	def get_zoom_targets(self):
 		"""Where zooming should go, and in what order.
 Rules can override this by setting self.zoom_targets, typically to a list of non-immediate children or a list of intermediate children but in a different order."""
 		if self.zoom_targets is None: #not overridden by a rule.
 			return self.children
 		return self.zoom_targets
 
-	def get_xml_fragment():
+	def get_xml_fragment(self):
 		"""Returns an XML fragment representing this node  For use with braille providers."""
-		return ElementTree.tostring(self.associated_xml, encoding = "utf8")
+		return ElementTree.tostring(self.associated_xml, encoding = "utf-8")
 
-	def iterate():
+	def iterate(self):
 		"""Returns a bredth-first iterator starting at this node."""
 		yield self
-		for i in self.children:
-			for j in i.iterate()
+		next = self.children
+		new_next = []
+		while len(next):
+			for i in next:
 				yield i
+				new_next += i.children
+			next = new_next
+			new_next = []
 
 def build_tree(root):
 	"""Build a tree from an ElementTree element.  Does not normalize."""

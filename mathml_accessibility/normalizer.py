@@ -4,14 +4,9 @@ The normalize_mathml function expects an elementtree root element and normalizes
 
 from __future__ import unicode_literals
 import xml.etree.ElementTree as ElementTree
-import re
 from . import data
 
-#these elements wrap their immediate children in mrow elements.
-single_argument_elements = set(["msqrt", "mstyle", "merror", "mpadded", "mphantom",
-
 #matches XML namespace.
-namespace_re = re.compile(".+:.+")
 
 def _normalize_node(node):
 	#handle the single mrow case.
@@ -25,19 +20,19 @@ def _normalize_node(node):
 		new_mrow.extend(old_children)
 	#otherwise, we need to wrap all children in mrow.
 	else:
-		for i, child in list(node): #we need to be holding the old list.
+		for i, child in enumerate(list(node)): #we need to be holding the old list.
 			if child.tag == "mrow": #okay, fine, good. Skip it.
 				continue
-		new_mrow = ElementTree.Element(tag = "mrow")
-		del node[i]
-		new_mrow.insert(child, 0)
-		node.insert(new_mrow, i)
+			new_mrow = ElementTree.Element(tag = "mrow")
+			del node[i]
+			new_mrow.insert(0, child)
+			node.insert(i, new_mrow)
 
 def _remove_namespaces(node):
 	nodes = list(node.iter()) #python docs are unclear if we can modify .tag attribute while iterating.
 	for n in nodes:
-		if namespace_re.match(n.tag) is not None:
-			needed = n.tag.split(":")[1] #grab the nonnamespace part.
+		if "}" in n.tag:
+			n.tag= n.tag.split("}")[1] #grab the nonnamespace part.
 
 #The normalizer.
 def normalize_mathml(root):

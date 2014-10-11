@@ -142,14 +142,14 @@ def rule_return_value(node, template_string, template_string_low_verbocity = Non
 		'zoom_targets' : zoom_targets,
 	}
 
-def _apply_node(node, rule_set, , locale):
+def _apply_node(node, rule_set, locale):
 	passed_rule = rule_return_value(node, template_string = "Error: could not translate node")
 	candidates = []
 	for i in rule_set.get_topic_order():
 		if node.tag in rule_set.rules[i]:
 			candidates += [(i, rule_set.rules[i][node.tag])]
 	for i, rule in candidates:
-		result = rule.execute(node)
+		result = rule.execute(node, locale)
 		if result is not FAILED_RULE:
 			passed_rule = result
 			break
@@ -162,9 +162,9 @@ def apply_rule_set(tree, rule_set_name, locale):
 	if rule_set_name not in rule_sets:
 		raise NoSuchRuleSetError(rule_set_name)
 	rule_set = rule_sets[rule_set_name]
-	nodes = [list(tree.iterate())]
+	nodes = list(tree.iterate())
 	for i in nodes:
-		_apply_node(node, rule_set, locale)
+		_apply_node(i, rule_set, locale)
 	#it's a bredth-first iterator, so reversing it gives us deepest first.
 	for i in reversed(nodes):
 		i.compute_strings()
