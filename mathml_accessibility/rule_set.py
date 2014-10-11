@@ -16,6 +16,8 @@ Rules themselves should do one of two things:
 - Succeed.  A successful rule should return the result of an invocation of rule_return_value.
 """
 
+from . import data
+
 #the constant for a failed rule.
 #we compare with this using is.
 FAILED_RULE = object()
@@ -24,6 +26,10 @@ class NoSuchTopicError(Exception):
 	"""Thrown when we try to add a rule for an unregistered topic."""
 	def __init__(self, topic):
 		super(Exception, self).__init__("No Such Topic: {}".format(topic))
+
+class NoSuchTagError(Exception):
+	def__init__(self, tag):
+		super(Exception, self).__init__("No such tag: {}".format(tag))
 
 class Rule(object):
 	"""A rule: holds locale, func associations."""
@@ -51,6 +57,8 @@ class RuleSet(object):
 		"""set a rule which is active when a topic is active, for the MathML tag for_tag, and which is executed by calling func.
 
 Func receives one argument: a node object."""
+		if for_tag not in data.all_tags:
+			raise NoSuchTagError(for_tag)
 		if topic not in self.topics:
 			raise NoSuchTopicError(topic)
 		if for_tag not in self.rules[topic]:
