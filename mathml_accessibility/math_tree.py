@@ -12,6 +12,15 @@ class MathNode(object):
 		self.template_string = template_string
 		self.zoom_targets = None
 
+	def compute_strings(self):
+		"""Assumes that compute_strings has been called on all children."""
+		children_strings = [i.string for i in self.children]
+		children_strings_high_verbocity = [i.string_high_verbocity for i in self.children]
+		zoom_target_strings = [i.string for i in getattr(self, 'zoom_targets', self.children)]
+		zoom_target_high_verbocity_strings = [i.string_high_verbocity for i in getattr(self, 'zoom_targets', self.children)]
+		self.string = self.template_string.format(*children_strings, zoom_targets = zoom_target_strings)
+		self.string_high_verbocity = self.template_string_high_verbocity.format(*children_strings_high_verbocity, zoom_targets = zoom_target_high_verbocity_strings)
+
 	def get_zoom_targets():
 		"""Where zooming should go, and in what order.
 Rules can override this by setting self.zoom_targets, typically to a list of non-immediate children or a list of intermediate children but in a different order."""
@@ -21,14 +30,18 @@ Rules can override this by setting self.zoom_targets, typically to a list of non
 
 	def get_xml_fragment():
 		"""Returns an XML fragment representing this node  For use with braille providers."""
-		return ElementTree.tostring(self.associated_xml)
+		return ElementTree.tostring(self.associated_xml, encoding = "utf8")
 
-	def get_template_string(self):
-		return self.template_string
+	def iterate():
+		"""Returns a bredth-first iterator starting at this node."""
+		yield self
+		for i in self.children:
+			for j in i.iterate()
+				yield i
 
 def build_tree(root):
 	"""Build a tree from an ElementTree element.  Does not normalize."""
-	#first, a dict of etree to nodes.
+	#first, a dict of etree xml to nodes.
 	xml_to_nodes = dict()
 	for i in root.iter():
 		xml_to_nodes[i] = MathNode(tag = i.tag, associated_xml = i)

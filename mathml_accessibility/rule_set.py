@@ -31,6 +31,10 @@ class NoSuchTagError(Exception):
 	def __init__(self, tag):
 		super(Exception, self).__init__("No such tag: {}".format(tag))
 
+class NoSuchRuleSetError(Exception):
+	def __init__(self, rule_set):
+		super(Exception, self).__init__("No such rule set {}".format(rule_set))
+
 class Rule(object):
 	"""A rule: holds locale, func associations."""
 	def __init__(self):
@@ -38,6 +42,13 @@ class Rule(object):
 
 	def add(self, locale, func):
 		self.rule_dict[locale] = func
+
+	def execute(self, node, locale):
+		if locale in self.rule_dict:
+			return self.rule_dict[locale](node)
+		elif 'default' in self.rule_dict:
+			return self.rule_dict['default'](node)
+		return FAILED_RULE
 
 class RuleSet(object):
 	def __init__(self, name):
@@ -131,5 +142,29 @@ def rule_return_value(node, template_string, template_string_low_verbocity = Non
 		'zoom_targets' : zoom_targets,
 	}
 
-def execute(tree, rule_set, locale):
-	pass
+def _apply_node(node, rule_set, , locale):
+	passed_rule = rule_return_value(node, template_string = "Error: could not translate node")
+	candidates = []
+	for i in rule_set.get_topic_order():
+		if node.tag in rule_set.rules[i]:
+			candidates += [(i, rule_set.rules[i][node.tag])]
+	for i, rule in candidates:
+		result = rule.execute(node)
+		if result is not FAILED_RULE:
+			passed_rule = result
+			break
+	#apply passed_rule
+	node.zoom_targets = passed_rule['zoom_targets']
+	node.template_string = passed_rule['template_string']
+	node.template_string_low_verbocity = passed_rule['template_string_low_verbocity']
+
+def apply_rule_set(tree, rule_set_name, locale):
+	if rule_set_name not in rule_sets:
+		raise NoSuchRuleSetError(rule_set_name)
+	rule_set = rule_sets[rule_set_name]
+	nodes = [list(tree.iterate())]
+	for i in nodes:
+		_apply_node(node, rule_set, locale)
+	#it's a bredth-first iterator, so reversing it gives us deepest first.
+	for i in reversed(nodes):
+		i.compute_strings()
