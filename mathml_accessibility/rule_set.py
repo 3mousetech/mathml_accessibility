@@ -25,6 +25,14 @@ class NoSuchTopicError(Exception):
 	def __init__(self, topic):
 		super(Exception, self).__init__("No Such Topic: {}".format(topic))
 
+class Rule(object):
+	"""A rule: holds locale, func associations."""
+	def __init__(self):
+		self.rule_dict = dict()
+
+	def add(self, locale, func):
+		self.rule_dict[locale] = func
+
 class RuleSet(object):
 	def __init__(self, name):
 		self.name = name
@@ -39,13 +47,15 @@ class RuleSet(object):
 		self.topics.append(topic)
 		self.rules['topic'] = dict()
 
-	def add_rule(self, topic, for_tag, func):
-		"""Add a rule which is active when a topic is active, for the MathML tag for_tag, and which is executed by calling func.
+	def set_rule(self, topic, for_tag, func, locale = 'default'):
+		"""set a rule which is active when a topic is active, for the MathML tag for_tag, and which is executed by calling func.
 
 Func receives one argument: a node object."""
 		if topic not in self.topics:
 			raise NoSuchTopicError(topic)
-		self.rules[topic][for_tag] = func
+		if for_tag not in self.rules[topic]:
+			self.rules[topic][for_tag] = Rule()
+		self.rules[topic][for_tag].add(locale, func)
 
 	def get_topic_order(self):
 		return self.topic_order
@@ -89,14 +99,14 @@ def set_topic_order(order):
 		raise no_current_rule_set
 	current_rule_set.set_topic_order(order)
 
-def add_rule(topic, tag, func):
+def set_rule(topic, tag, func, locale = 'default'):
 	global current_rule_set
 	if current_rule_set is None:
 		raise no_current_rule_set
-	current_rule_set.add_rule(topic, tag, func)
+	current_rule_set.set_rule(topic, tag, func, locale)
 
-def rule(topic, tag):
+def rule(topic, tag, locale = 'default'):
 	def rule_dec(func):
-		add_rule(topic, tag, func)
+		set_rule(topic, tag, func, locale)
 		return func
 	return rule_dec
