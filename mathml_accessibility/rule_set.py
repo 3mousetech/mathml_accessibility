@@ -28,7 +28,7 @@ class NoSuchTopicError(Exception):
 		super(Exception, self).__init__("No Such Topic: {}".format(topic))
 
 class NoSuchTagError(Exception):
-	def__init__(self, tag):
+	def __init__(self, tag):
 		super(Exception, self).__init__("No such tag: {}".format(tag))
 
 class Rule(object):
@@ -120,10 +120,10 @@ def rule(topic, tag, locale = 'default'):
 	return rule_dec
 
 #the special function that we use for return values:
-def rule_return_value(node, template_string, template_string_low_verbocity = none, zoom_targets = None):
-	if template_string_low_verbocity = None:
+def rule_return_value(node, template_string, template_string_low_verbocity = None, zoom_targets = None):
+	if template_string_low_verbocity is None:
 		template_string_low_verbocity = template_string
-	if zoom_targets = None:
+	if zoom_targets is None:
 		zoom_targets = node.get_zoom_targets()
 	return {
 		'template_string' : template_string,
