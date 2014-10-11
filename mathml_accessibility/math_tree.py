@@ -25,3 +25,19 @@ Rules can override this by setting self.zoom_targets, typically to a list of non
 
 	def get_template_string(self):
 		return self.template_string
+
+def build_tree(root):
+	"""Build a tree from an ElementTree element.  Does not normalize."""
+	#first, a dict of etree to nodes.
+	xml_to_nodes = dict()
+	for i in root.iter():
+		xml_to_nodes[i] = MathNode(tag = i.tag, associated_xml = i)
+	#hook up the children.  Order is important here.
+	needs_processing = set([root])
+	while len(needs_processing):
+		processing = needs_processing.pop()
+		n = xml_to_nodes[processing]
+		xml_children = list(processing)
+		children = [xml_to_nodes[i] for i in xml_children]
+		needs_processing.update(xml_children)
+	return xml_to_nodes[root]

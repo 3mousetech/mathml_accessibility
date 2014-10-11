@@ -51,7 +51,7 @@ class RuleSet(object):
 
 	def add_topic(self, topic):
 		self.topics.append(topic)
-		self.rules['topic'] = dict()
+		self.rules[topic] = dict()
 
 	def set_rule(self, topic, for_tag, func, locale = 'default'):
 		"""set a rule which is active when a topic is active, for the MathML tag for_tag, and which is executed by calling func.
@@ -130,3 +130,6 @@ def rule_return_value(node, template_string, template_string_low_verbocity = Non
 		'template_string_low_verbocity': template_string_low_verbocity,
 		'zoom_targets' : zoom_targets,
 	}
+
+def execute(tree, rule_set, locale):
+	pass
