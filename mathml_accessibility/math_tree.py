@@ -39,5 +39,8 @@ def build_tree(root):
 		n = xml_to_nodes[processing]
 		xml_children = list(processing)
 		children = [xml_to_nodes[i] for i in xml_children]
+		for i in children:
+			i.parent = n
+		n.children = children
 		needs_processing.update(xml_children)
 	return xml_to_nodes[root]
