@@ -1,4 +1,5 @@
 """This module contains or obtains various miscellaneous data on MathML"""
+from __future__ import unicode_literals
 
 all_tags = set(["math", "maction", "maligngroup", "malignmark",
 "menclose", "merror", "mfence", "mfrac",

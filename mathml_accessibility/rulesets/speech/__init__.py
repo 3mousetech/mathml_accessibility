@@ -1,3 +1,4 @@
+from __future__ import unicode_literals
 from ...rule_set import *
 
 begin_rule_set("speech")

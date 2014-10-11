@@ -1,3 +1,4 @@
+from ___future__ import unicode_literals
 import xml.etree.ElementTree as ElementTree
 
 class MathNode(object):

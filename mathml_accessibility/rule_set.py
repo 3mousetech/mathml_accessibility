@@ -15,7 +15,7 @@ Rules themselves should do one of two things:
 - Fail.  A failed rule does nothing except returnFAILED_RULE (note the caps) from this module.
 - Succeed.  A successful rule should return the result of an invocation of rule_return_value.
 """
-
+from __future__ import unicode_literals
 from . import data
 
 #the constant for a failed rule.
