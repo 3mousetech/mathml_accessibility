@@ -13,7 +13,7 @@ there is an alternative and less declarative interface; see the RuleSet class.
 
 Rules themselves should do one of two things:
 - Fail.  A failed rule does nothing except returnFAILED_RULE (note the caps) from this module.
-- Succeed.  A successful rule should modify the tree to be spoken, starting with the node it was passed.  See tree.py for a description of nodes and their properties.
+- Succeed.  A successful rule should return the result of an invocation of rule_return_value.
 """
 
 #the constant for a failed rule.
@@ -110,3 +110,15 @@ def rule(topic, tag, locale = 'default'):
 		set_rule(topic, tag, func, locale)
 		return func
 	return rule_dec
+
+#the special function that we use for return values:
+def rule_return_value(node, template_string, template_string_low_verbocity = none, zoom_targets = None):
+	if template_string_low_verbocity = None:
+		template_string_low_verbocity = template_string
+	if zoom_targets = None:
+		zoom_targets = node.get_zoom_targets()
+	return {
+		'template_string' : template_string,
+		'template_string_low_verbocity': template_string_low_verbocity,
+		'zoom_targets' : zoom_targets,
+	}
