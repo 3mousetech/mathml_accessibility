@@ -7,7 +7,7 @@
 #Copyright 2012-2013 World Light Information Limited and Hong Kong Blind Union.
 
 
-from mathspeak import zh_TW
+from . import zh_TW
 
 
 class MathSpeak(zh_TW.MathSpeak):

@@ -7,7 +7,7 @@
 #Copyright 2012-2013 World Light Information Limited and Hong Kong Blind Union.
 
 
-from mathspeak import _core
+from . import _core
 
 
 _core.VARIANT_DICT.update({
