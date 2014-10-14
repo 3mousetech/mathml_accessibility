@@ -50,3 +50,6 @@ More specifically, the root must have been run through the normalizer. The docum
 		self.siblings = self.stack[-1].get_zoom_targets()
 		self.current_position = 0
 		return self.get_current_position()
+
+	def get_xml(self):
+		return self.siblings[self.current_position].get_xml_fragment()

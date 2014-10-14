@@ -26,11 +26,15 @@ class NaturalMathMlInteraction(mathPres.MathInteractionNVDAObject):
 	def script_zoomOut(self, gesture):
 		speech.speak([self.cursor.zoom_out()])
 
+	def script_sayXml(self, gesture):
+		speech.speak([self.cursor.get_xml().encode("raw_unicode_escape")])
+
 	__gestures = {
 		"kb:rightArrow": "moveRight",
 		"kb:leftArrow": "moveLeft",
 		"kb:downArrow": "zoomIn",
 		"kb:upArrow": "zoomOut",
+		"kb:x": "sayXml",
 	}
 
 class NaturalMathMlProvider(mathPres.MathPresentationProvider):
