@@ -19,13 +19,13 @@ More specifically, the root must have been run through the normalizer. The docum
 	def get_current_position(self):
 		return self.siblings[self.current_position].string
 
-	def go_left(self):
+	def move_left(self):
 		if self.current_position == 0:
 			return "Cannot go left"
 		self.current_position -= 1
 		return self.get_current_position()
 
-	def go_right(self):
+	def move_right(self):
 		if self.current_position+1 == len(self.siblings):
 			return "Cannot go right"
 		self.current_position += 1

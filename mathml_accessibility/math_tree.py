@@ -30,7 +30,7 @@ Rules can override this by setting self.zoom_targets, typically to a list of non
 
 	def get_xml_fragment(self):
 		"""Returns an XML fragment representing this node  For use with braille providers."""
-		return ElementTree.tostring(self.associated_xml, encoding = "utf-8")
+		return ElementTree.tostring(self.associated_xml)
 
 	def iterate(self):
 		"""Returns a bredth-first iterator starting at this node."""

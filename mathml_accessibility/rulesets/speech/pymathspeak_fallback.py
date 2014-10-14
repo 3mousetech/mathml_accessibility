@@ -7,7 +7,11 @@ import xml.etree.ElementTree as ElementTree
 mathspeak = en.MathSpeak()
 
 def pymathspeak_fallback(node):
-	return rule_return_value(node, template_string = mathspeak.translate(node.get_xml_fragment()))
+	fragment = node.get_xml_fragment()
+	if node.tag != "math":
+		fragment = "<math>" + fragment + "</math>"
+	s = mathspeak.translate(fragment)
+	return rule_return_value(node, template_string = s)
 
 for i in data.all_tags:
 	set_rule("pymathspeak_fallback", i, pymathspeak_fallback)
